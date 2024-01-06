@@ -3,6 +3,36 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+enum BlockStatus {
+  Allocated = 'ALLOCATED',
+  Free = 'FREE',
+}
+
+interface MemoryHeader {
+  size: number; // Size of the block excluding the header and footer
+}
+
+interface MemoryFooter {
+  size: number; // Size of the block excluding the header and footer
+}
+
+interface MemoryBlock {
+  address: string; // Memory address of the block
+  size: number; // Size of the block in bytes
+  status: BlockStatus; // Whether the block is allocated or free
+  content: string[]; // Array of addresses or references (for allocated blocks)
+  header: MemoryHeader; // Header of the block
+  footer: MemoryFooter; // Footer of the block
+}
+
+
+interface Heap {
+  blocks: MemoryBlock[]; // Array of memory blocks on the heap
+}
+
+
+
+
 function App() {
   const [count, setCount] = useState(0)
 
