@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createRandomNumber } from './utils';
 import './App.css'
+import VisualHeap from './components/visual-heap/visual-heap';
 
 enum BlockStatus {
   Allocated = 'ALLOCATED',
@@ -23,8 +24,7 @@ interface MemoryBlock {
   header: MemoryAddress; // Header of the block
 }
 
-
-interface Heap {
+export interface Heap {
   blocks: MemoryBlock[]; // Array of memory blocks on the heap
 }
 
@@ -32,7 +32,7 @@ const heap: Heap = {
   blocks: []
 }
 
-const maxBitWidth = 8 as const;
+export const maxBitWidth = 8 as const;
 
 function createBlock(size: number, status: BlockStatus): MemoryBlock {
   // Here is an example:
@@ -78,12 +78,26 @@ function createBlock(size: number, status: BlockStatus): MemoryBlock {
   return block
 }
 
+function createHeap() {
+  const block1 = createBlock(32, BlockStatus.Free)
+  const block2 = createBlock(16, BlockStatus.Allocated)
+
+  const heap: Heap = {
+    blocks: [block1, block2]
+  }
+
+  return heap
+}
+
+
 function App() {
-  const [heap, setHeap] = useState<Heap>()
+  const [heap, setHeap] = useState<Heap>(createHeap())
 
   return (
     <>
-
+      <VisualHeap
+        heap={heap}
+      />
     </>
   )
 }
