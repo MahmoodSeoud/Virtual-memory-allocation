@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Heap, maxBitWidth } from "../../App";
+import { useEffect, useState } from "react";
+import { Heap, MAX_ADDRESS, MAX_BIT_WIDTH } from "../../App";
 import './Visual-heap.css'
 import { createRandomNumber } from "../../utils";
 
@@ -9,48 +9,58 @@ interface VisualHeapProps {
 }
 
 
-let arr: string[] = []
+
+function createAddresses(heapBlocks: string[]): string[] {
+    let generatedNumbers = new Set<number>();
+    let randomNumber: number;
+    heapBlocks.map(() => {
+        do {
+            randomNumber = createRandomNumber(0, MAX_ADDRESS);
+        } while (generatedNumbers.has(randomNumber))
+
+        generatedNumbers.add(randomNumber);
+
+        randomNumber.toString(16).padStart(MAX_BIT_WIDTH, '0');
+    });
+
+    return [...generatedNumbers].map((number) => number.toString(16).padStart(MAX_BIT_WIDTH, '0'))
+}
+
 function VisualHeap({ heap }: VisualHeapProps) {
-    const heapSize = heap.blocks.length;
-    const heapBlocks = heap.blocks;
+    const heapBlocks = heap.blocks.flatMap(block => block.payload);
+    const [addresses] = useState<string[]>(createAddresses(heapBlocks))
 
-    useEffect(() => {
-
-        for (let index = 0; index < heapSize; index++) {
-            let address = createRandomNumber(0, 100).toString(16).padStart(maxBitWidth, '0');
-            arr.push(address)
-        }
-        console.log(arr)
-    }, [heap])
-
-    debugger
-
-
+    console.log('addresses', addresses)
     return (
         <>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                <p style={{ fontWeight: 'bold' }}>Address</p>
+                <p style={{ fontWeight: 'bold', marginLeft: '80px' }}>Original value</p>
+            </div>
             {
-                heapBlocks.map(block => {
+                heap.blocks.map((block, i) => {
+
                     return (
-                        block.payload.map((address, index) => {
+                        block.payload.map((address, j) => {
                             return (
-
-                                <div style={{ display: 'flex' }}>
+                                <>
                                     <div
-                                        style={{ border: '1px solid white' }}
-                                        key={index}
+                                        key={i}
+                                        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}
                                     >
-                                        hello
-                                        {arr[index]}
+                                        <div
+                                        >
+                                            <p className="address-text">
+                                                0x{addresses[j]}
+                                            </p>
+                                        </div>
+                                        <div
+                                            className="row"
+                                        >
+                                            {address}
+                                        </div>
                                     </div>
-
-                                    <div
-                                        key={index}
-                                        className="row"
-                                    >
-                                        hell
-                                        {address}
-                                    </div>
-                                </div>
+                                </>
                             )
                         })
                     )

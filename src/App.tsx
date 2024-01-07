@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createRandomNumber } from './utils';
 import './App.css'
-import VisualHeap from './components/visual-heap/visual-heap';
+import VisualHeap from './components/visual-heap/Visual-heap';
 
 enum BlockStatus {
   Allocated = 'ALLOCATED',
@@ -28,11 +28,9 @@ export interface Heap {
   blocks: MemoryBlock[]; // Array of memory blocks on the heap
 }
 
-const heap: Heap = {
-  blocks: []
-}
 
-export const maxBitWidth = 8 as const;
+export const MAX_BIT_WIDTH = 8 as const;
+export const MAX_ADDRESS = 20_000 as const;
 
 function createBlock(size: number, status: BlockStatus): MemoryBlock {
   // Here is an example:
@@ -44,9 +42,9 @@ function createBlock(size: number, status: BlockStatus): MemoryBlock {
   const rows = size / bytesPerRow;
 
   // Create footer and header and make sure they are the same
-  const footer = createRandomNumber(0, 100)
+  const footer = createRandomNumber(0, MAX_ADDRESS)
     .toString(base.hex)
-    .padStart(maxBitWidth, '0');
+    .padStart(MAX_BIT_WIDTH, '0');
 
   const header = footer;
 
@@ -54,14 +52,14 @@ function createBlock(size: number, status: BlockStatus): MemoryBlock {
   const payload: MemoryAddress[] = [];
   for (let index = 0; index < rows; index++) {
 
-    let address: MemoryAddress = createRandomNumber(0, 100)
+    let address: MemoryAddress = createRandomNumber(0, MAX_ADDRESS)
       .toString(base.hex)
-      .padStart(maxBitWidth, '0');
+      .padStart(MAX_BIT_WIDTH, '0');
 
     while (address === footer) {
-      address = createRandomNumber(0, 100)
+      address = createRandomNumber(0, MAX_ADDRESS)
         .toString(base.hex)
-        .padStart(maxBitWidth, '0');
+        .padStart(MAX_BIT_WIDTH, '0');
     }
 
     payload.push(address)
