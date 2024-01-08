@@ -8,67 +8,72 @@ interface VisualHeapProps {
 
 }
 
-
-
 function createAddresses(heapBlocks: string[]): string[] {
-    let generatedNumbers = new Set<number>();
-    let randomNumber: number;
-    heapBlocks.map(() => {
-        do {
-            randomNumber = createRandomNumber(0, MAX_ADDRESS);
-        } while (generatedNumbers.has(randomNumber))
+    let addresses: string[] = [];
 
-        generatedNumbers.add(randomNumber);
+    let address: number = createRandomNumber(0, MAX_ADDRESS);
 
-        randomNumber.toString(16).padStart(MAX_BIT_WIDTH, '0');
-    });
+    for (let index = 0; index < heapBlocks.length - 1; index++) {
+        const hexAddress = address.toString(16).padStart(MAX_BIT_WIDTH, '0');
+        
+        addresses.push(hexAddress)
+        address += 4;
+    }
 
-    return [...generatedNumbers].map((number) => number.toString(16).padStart(MAX_BIT_WIDTH, '0'))
+    return addresses
+
 }
 
 function VisualHeap({ heap }: VisualHeapProps) {
-    const heapBlocks = heap.blocks.flatMap(block => block.payload);
+    const heapBlocks = heap.blocks
+        .flatMap(block => block.payload)
+        .concat(heap.blocks.map(block => block.footer)
+            .concat(heap.blocks.map(block => block.header)));
+
     const [addresses] = useState<string[]>(createAddresses(heapBlocks))
+    debugger
 
     console.log('addresses', addresses)
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                <p style={{ fontWeight: 'bold' }}>Address</p>
-                <p style={{ fontWeight: 'bold', marginLeft: '80px' }}>Original value</p>
-            </div>
-            {
-                heap.blocks.map((block, i) => {
-
-                    return (
-                        block.payload.map((address, j) => {
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <p style={{ fontWeight: 'bold' }}>Address</p>
+                    {
+                        heap.blocks.map((block, i) => {
                             return (
                                 <>
-                                    <div
-                                        key={i}
-                                        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}
-                                    >
-                                        <div
-                                        >
-                                            <p className="address-text">
-                                                0x{addresses[j]}
-                                            </p>
-                                        </div>
-                                        <div
-                                            className="row"
-                                        >
-                                            {address}
-                                        </div>
-                                    </div>
+                                    {addresses && addresses.length > 0 && addresses.map((_, j) => {
+                                        return (
+                                            <p className="address-text">0x{addresses[addresses.length - j - 1]}</p>
+                                        )
+                                    })}
                                 </>
                             )
                         })
-                    )
-                })
-            }
-
+                    }
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <p style={{ fontWeight: 'bold' }}>Original value</p>
+                    {
+                        heap.blocks.map((block, i) => {
+                            return (
+                                <>
+                                    <div className="row">{block.footer}</div>
+                                    {block.payload && block.payload.length > 0 && block.payload.map((address) => {
+                                        return (
+                                            <p className="row">{address}</p>
+                                        )
+                                    })}
+                                    <div className="row">{block.header}</div>
+                                </>
+                            )
+                        })
+                    }
+                </div>
+            </div>
         </>
-    );
+    )
 }
 
 export default VisualHeap;

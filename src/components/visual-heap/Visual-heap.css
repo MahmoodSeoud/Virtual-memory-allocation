@@ -1,18 +1,29 @@
 
 .row {
     border: 1px solid white;
-    margin-left: 5px;   
+    margin-left: 1px;   
     width: 200px;
     height: 50px;
     font-size: large;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 
 .address-text{
-    margin: 0;
-    font-size: small;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    font-size: normal;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border: 1px solid transparent;
+    width: 200px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+

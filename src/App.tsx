@@ -50,7 +50,8 @@ function createBlock(size: number, status: BlockStatus): MemoryBlock {
 
   // Create rand address as payload
   const payload: MemoryAddress[] = [];
-  for (let index = 0; index < rows; index++) {
+  // -2 because we don't want to include the header and footer
+  for (let index = 0; index < rows -2; index++) {
 
     let address: MemoryAddress = createRandomNumber(0, MAX_ADDRESS)
       .toString(base.hex)
